@@ -1,7 +1,6 @@
 from utils import carregar_base, seleciona_variaveis_RNE, validacao_cruzada
 from sklearn.ensemble import RandomForestClassifier
 
-
 def busca_melhores_features(model, dados):
     print('\nBuscando a melhor seleção de variavel utilizando recursive feature elimination para RFC')
     melhor_score = 0.0
