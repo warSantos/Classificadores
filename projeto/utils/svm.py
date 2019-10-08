@@ -23,7 +23,7 @@ def busca_melhores_features(model, dados):
 
 if __name__=='__main__':
     base = carregar_base(argv[1])
-    #svm_modelo = SVC(C=1, gamma='scale')
-    svm_modelo = RandomForestClassifier(n_estimators = 100, criterion = 'entropy')
+    svm_modelo = SVC(C=1, gamma='scale')
+    #svm_modelo = RandomForestClassifier(n_estimators = 100, criterion = 'entropy')
     score, num_variaveis = busca_melhores_features(svm_modelo, base)
     print("\n\nMelhor acurácia: ", score, 'Número de váriveis', 30 - num_variaveis)
