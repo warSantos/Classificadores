@@ -1,6 +1,8 @@
 from sys import argv, exit
 from utils import carregar_base
 from random import randint
+from sklearn.metrics import roc_auc_score, roc_curve
+from matplotlib import pyplot
 
 # Constroi tabela de probailidades para predição
 def treino(dados):
@@ -64,6 +66,8 @@ def validacao_cruzada(arquivo, lotes=4):
 	# Calculando quantas instâncias seram utilizadas para treino e teste.
 	total = len(base.index)
 	ntreino = total - int(total/lotes)
+	predicoes = list()
+	eixo_y = list()
 	while iteracoes < lotes:
 		dados = base.sample(frac=1)
 		# Selecionando espaço de treino.
@@ -88,6 +92,8 @@ def validacao_cruzada(arquivo, lotes=4):
 			else:
 				f_positivos += 1
 			total_testes += 1
+			predicoes.append(classe)
+			eixo_y.append(row['Result'])
 		iteracoes += 1
 	
 	print("Positivos: ", positivos, " | Falso Positivos: ", f_positivos)
@@ -100,6 +106,14 @@ def validacao_cruzada(arquivo, lotes=4):
 	precisao = positivos/(f_positivos + positivos)
 	print("Precisão: ", precisao)
 	print("F1 Score: ", 2 * recall * precisao / (precisao + recall))
+	print("ROC AUC: ", roc_auc_score(eixo_y, predicoes))
+	fpr, tpr, _ = roc_curve(eixo_y, predicoes)
+	pyplot.plot(fpr, tpr, marker='.', label='Naive Bayes')
+	pyplot.xlabel('Taxa de Falsos Positivos')
+	pyplot.ylabel('Taxa de Verdadeiros Positivos')
+	pyplot.legend()
+	pyplot.show()
+
 
 def funcao_teste():
 	dados = carregar_base(argv[1])
