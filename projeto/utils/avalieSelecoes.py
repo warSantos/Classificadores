@@ -110,6 +110,7 @@ def seleciona_variaveis_RFE_Metrics(model, dados, num_variaveis):
     X_new = X
     for i in range(0, len(featuresDrops)):
         X_new = X_new.drop(featuresNames[i], axis = 1)
+    y_pred = cross_val_predict(model, mX_new, Y, cv=5)
     return calculateMetrics(y_pred, Y)
 
 def saveData(path, data):
