@@ -3,17 +3,27 @@ import pandas as pd
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
+from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import classification_report, roc_auc_score, precision_score, accuracy_score,recall_score, f1_score, confusion_matrix
 import numpy as np
 from mlxtend.feature_selection import SequentialFeatureSelector as SFS
+import matplotlib.pyplot as plt
+from sklearn.feature_selection import RFE
 
 
-def RankList(dic_sfs, df):
+def calculateMetrics(y_pred, Y):
+    return (accuracy_score(y_pred, Y), roc_auc_score(y_pred, Y),
+            f1_score(y_pred, Y), recall_score(y_pred, Y),precision_score(y_pred, Y),
+           confusion_matrix(Y, y_pred).ravel())
+
+
+def RankList(dic_sfs, df, n):
     rankList = list()
     rankListName = list()
     name = df.columns
     x = dic_sfs.subsets_
-    for i in range(1, 49):
+    print(x)
+    for i in range(1, n):
         candidates = x[i]['feature_idx']
         for j in range(0, i):
             if(candidates[j] not in rankList):
@@ -23,14 +33,14 @@ def RankList(dic_sfs, df):
 
 
 def sfsListSelect(model, df):
-    n_features = len(df.columns)-1
+    n_features = len(df.columns)-48
     sfs = SFS(model, k_features=n_features, forward=True,
             floating=False, verbose=2, scoring='accuracy', cv=5,
             n_jobs=-1)
     X = df.drop('CLASS_LABEL',axis=1)
     Y = df['CLASS_LABEL'].astype('int32')
     sfs.fit(X, Y)
-    return RankList(sfs, df)
+    return RankList(sfs, df, n_features)
 
 
 def avaliaModelLista(rankList, model, df):
@@ -62,11 +72,12 @@ def treeListSelect(df):
         index = np.argmax(featuresImportance)
         rankListRFC.append(columList[index])
         featuresImportance[index] = - 1000
+    return rankListRFC
 
 
 def plotGrafico(acc_RFC, acc_Tree, acc_SVM, path):
-    x = range(1, 49)
-
+    x = range(1, len(acc_Tree)+1)
+    print('len x', len(x),' -- ' , len(acc_Tree))
     plt.plot(x, acc_Tree, 'o', color = 'blue' )
     plt.plot(x, acc_Tree, label = 'Decision-Tree', color = 'blue')
 
@@ -80,6 +91,7 @@ def plotGrafico(acc_RFC, acc_Tree, acc_SVM, path):
     plt.ylabel('Acurácia')
     plt.legend()
     plt.savefig(path)
+
 
 def seleciona_variaveis_RFE_Metrics(model, dados, num_variaveis):
     X = dados.drop('CLASS_LABEL',axis=1).astype('int32')
@@ -100,6 +112,11 @@ def seleciona_variaveis_RFE_Metrics(model, dados, num_variaveis):
         X_new = X_new.drop(featuresNames[i], axis = 1)
     return calculateMetrics(y_pred, Y)
 
+def saveData(path, data):
+    arq = open(path, 'w')
+    for e in data:
+        arq.write(str(e) + '\n')
+    arq.close()
 
 if __name__=='__main__':
 
@@ -113,27 +130,30 @@ if __name__=='__main__':
     rankListRFC = sfsListSelect(RFC, df)
     rankListTree = sfsListSelect(tree, df)
     rankListSVM = sfsListSelect(SVM, df)
-
     allMetricsRFC, acc_RFC = avaliaModelLista(rankListRFC, RFC, df)
     allMetricsTree, acc_Tree = avaliaModelLista(rankListTree, tree, df)
     allMetricsSVM, acc_SVM = avaliaModelLista(rankListSVM, SVM, df)
 
+    print(str(acc_Tree))
+
     plotGrafico(acc_RFC, acc_Tree, acc_SVM, 'GraficoSVS.png')
 
-
-    rfc1 = open('rfcsfs.txt', w)
+    saveData('rfcsfs.txt', allMetricsRFC)
+    saveData('treesfs.txt', allMetricsTree)
+    saveData('svmsfs.txt', allMetricsSVM)
+    '''
+    rfc1 = open('rfcsfs.txt', 'w')
     for e in allMetricsRFC:
         rfc1.write(str(e) + '\n')
 
-    tree1 = open('treefs.txt', w)
+    tree1 = open('treefs.txt', 'w')
     for e in allMetricsTree:
         tree1.write(str(e) + '\n')
 
-    svm1 = open('svmsfs.txt', w)
+    svm1 = open('svmsfs.txt', 'w')
     for e in allMetricsSVM:
         svm1.write(str(e) + '\n')
-
-
+'''
     # rfe
     allMetricsRFC2 = list()
     acc_RFC2 = list()
@@ -158,19 +178,23 @@ if __name__=='__main__':
 
     plotGrafico(acc_RFC2, acc_Tree2, acc_SVM2, 'GraficoRFE.png')
     #salva em arquivos
-    rfc2 = open('rfcrfe.txt', w)
+    saveData('rfcrfe.txt', allMetricsRFC2)
+    saveData('treerfe.txt', allMetricsTree2)
+    saveData('svmrfe.txt', allMetricsSVM2)
+    '''
+    rfc2 = open('rfcrfe.txt', 'w')
     for e in allMetricsRFC2:
         rfc2.write(str(e) + '\n')
 
-    tree2 = open('treerfe.txt', w)
+    tree2 = open('treerfe.txt', 'w')
     for e in allMetricsTree2:
         tree2.write(str(e) + '\n')
 
-    svm2 = open('svmrfe.txt', w)
+    svm2 = open('svmrfe.txt', 'w')
     for e in allMetricsSVM2:
         svm2.write(str(e) + '\n')
-
-    # rank por random forest
+    '''
+        # rank por random forest
     rankListImportanceRFC3 = treeListSelect(df)
     allMetricsRFC3, acc_RFC3 = avaliaModelLista(rankListImportanceRFC, RFC, df)
     allMetricsTree3, acc_Tree3 = avaliaModelLista(rankListImportanceRFC, tree, df)
@@ -178,15 +202,19 @@ if __name__=='__main__':
 
     plotGrafico(acc_RFC3, acc_Tree3, acc_SVM3, 'GraficoRFCSelect.png')
 
-
-    rfc3 = open('rfcES.txt', w)
+    saveData('rfcES.txt', allMetricsRFC3)
+    saveData('treeES.txt',allMetricsTree3)
+    saveData('svmEs.txt',allMetricsSVM3)
+    '''
+    rfc3 = open('rfcES.txt', 'w')
     for e in allMetricsRFC3:
         rfc3.write(str(e) + '\n')
 
-    tree3 = open('treeES.txt', w)
+    tree3 = open('treeES.txt', 'w')
     for e in allMetricsTree3:
         tree3.write(str(e) + '\n')
 
-    svm3 = open('svmES.txt', w)
+    svm3 = open('svmES.txt', 'w')
     for e in allMetricsSVM3:
         svm3.write(str(e) + '\n')
+'''
