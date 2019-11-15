@@ -29,6 +29,7 @@ def predicao(prob_classes, phishing, legitimo, alvo):
 
 	p_prob = 1
 	l_prob = 1
+	excecoes = 0
 	# Para cada variável do alvo.
 	for variavel in phishing.keys():
 		try:
@@ -38,7 +39,8 @@ def predicao(prob_classes, phishing, legitimo, alvo):
 			l_prob *= legitimo[variavel][alvo[variavel]]
 		except Exception as err:
 			#print(str(err), variavel)
-			pass
+			excecoes += 1
+			#pass
 	# Multiplicando pela probabilidade a priori das classes.
 	p_prob *= prob_classes[1]
 	l_prob *= prob_classes[-1]
@@ -50,7 +52,7 @@ def predicao(prob_classes, phishing, legitimo, alvo):
 		classe = 1
 	else:
 		classe = -1
-	return pf, pl, classe
+	return pf, pl, classe, excecoes
 	#print("Probabilidade de ser phishing: ", p_prob/(p_prob + l_prob))
 	#print("Probabilidade de ser legítima: ", l_prob/(p_prob + l_prob))
 
@@ -63,6 +65,7 @@ def validacao_cruzada(arquivo, lotes=4):
 	f_negativos = 0
 	iteracoes = 0
 	total_testes = 0
+	total_excecoes = 0
 	# Calculando quantas instâncias seram utilizadas para treino e teste.
 	total = len(base.index)
 	ntreino = total - int(total/lotes)
@@ -78,7 +81,7 @@ def validacao_cruzada(arquivo, lotes=4):
 		prob_classes, phishing, legitimo = treino(dt_treino)
 		# Testando o algoritmo.
 		for index, row in dt_teste.iterrows():
-			pf, pl, classe = predicao(prob_classes, phishing, legitimo, row)
+			pf, pl, classe, excecoes = predicao(prob_classes, phishing, legitimo, row)
 			# Contabilizando negativos.
 			if classe == -1 and row['Result'] == -1:
 				negativos += 1
@@ -94,8 +97,9 @@ def validacao_cruzada(arquivo, lotes=4):
 			total_testes += 1
 			predicoes.append(classe)
 			eixo_y.append(row['Result'])
+			total_excecoes += excecoes
 		iteracoes += 1
-	
+	print("Total Exceções: ", total_excecoes)
 	print("Positivos: ", positivos, " | Falso Positivos: ", f_positivos)
 	print("Negativos: ", negativos, " | Falso Negativos: ", f_negativos)
 	print("-"*30)
