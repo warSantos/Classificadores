@@ -51,10 +51,11 @@ def avaliaModelLista(rankList, model, df):
     acuracy = list()
     allMetrics.append(calculateMetrics(y_pred, Y))
     acuracy.append(allMetrics[0][0])
-
+    varNumber = 0;
     for feature in rankList:
         X = X.drop(feature, axis = 1)
         varNumber += 1
+        y_pred = cross_val_predict(model, X, Y, cv=5)
         allMetrics.append(calculateMetrics(y_pred, Y))
         acuracy.append(allMetrics[varNumber][0])
 
@@ -68,10 +69,10 @@ def treeListSelect(df):
     columList = df.columns
     rankListRFC = list()
     featuresImportance = rfc.feature_importances_
-    for i in range(len(featuresImportance)):
+    for e in featuresImportance:
         index = np.argmax(featuresImportance)
         rankListRFC.append(columList[index])
-        featuresImportance[index] = - 1000
+        featuresImportance[index] = -1000
     return rankListRFC
 
 
@@ -104,13 +105,13 @@ def seleciona_variaveis_RFE_Metrics(model, dados, num_variaveis):
 
     for i in range(0,len(featuresNames)):
         if(not rfe.support_[i]):
-            FeaturesDrops.append((i, featuresNames[i]))
+            featuresDrops.append((i, featuresNames[i]))
 
     # gera novos conjuntos de treinamento excluindo as variaveis
     X_new = X
     for i in range(0, len(featuresDrops)):
         X_new = X_new.drop(featuresNames[i], axis = 1)
-    y_pred = cross_val_predict(model, mX_new, Y, cv=5)
+    y_pred = cross_val_predict(model, X_new, Y, cv=5)
     return calculateMetrics(y_pred, Y)
 
 def saveData(path, data):
@@ -124,10 +125,11 @@ if __name__=='__main__':
     path = '../../dados/Phishing_Legitimate_full.arff'
     data = arff.loadarff(path)
     df = pd.DataFrame(data[0])
+
     RFC = RandomForestClassifier(n_estimators = 100, criterion = 'entropy')
     tree = tree.DecisionTreeClassifier()
     SVM = SVC(C=1, gamma='scale', kernel = 'linear')
-
+    
     rankListRFC = sfsListSelect(RFC, df)
     rankListTree = sfsListSelect(tree, df)
     rankListSVM = sfsListSelect(SVM, df)
@@ -142,20 +144,9 @@ if __name__=='__main__':
     saveData('rfcsfs.txt', allMetricsRFC)
     saveData('treesfs.txt', allMetricsTree)
     saveData('svmsfs.txt', allMetricsSVM)
-    '''
-    rfc1 = open('rfcsfs.txt', 'w')
-    for e in allMetricsRFC:
-        rfc1.write(str(e) + '\n')
 
-    tree1 = open('treefs.txt', 'w')
-    for e in allMetricsTree:
-        tree1.write(str(e) + '\n')
-
-    svm1 = open('svmsfs.txt', 'w')
-    for e in allMetricsSVM:
-        svm1.write(str(e) + '\n')
-'''
     # rfe
+    print('SELECIONANDO RFE 0/3\n')
     allMetricsRFC2 = list()
     acc_RFC2 = list()
     for i in range(0, 48):
@@ -165,6 +156,7 @@ if __name__=='__main__':
 
     allMetricsTree2 = list()
     acc_Tree2 = list()
+    print('1/3\n')
     for i in range(0, 48):
         k = seleciona_variaveis_RFE_Metrics(tree, df, 48-i)
         allMetricsTree2.append(k);
@@ -172,6 +164,7 @@ if __name__=='__main__':
 
     allMetricsSVM2 = list()
     acc_SVM2 = list()
+    print('2/3\n')
     for i in range(0, 48):
         k = seleciona_variaveis_RFE_Metrics(SVM, df, 48-i)
         allMetricsSVM2.append(k);
@@ -182,21 +175,10 @@ if __name__=='__main__':
     saveData('rfcrfe.txt', allMetricsRFC2)
     saveData('treerfe.txt', allMetricsTree2)
     saveData('svmrfe.txt', allMetricsSVM2)
-    '''
-    rfc2 = open('rfcrfe.txt', 'w')
-    for e in allMetricsRFC2:
-        rfc2.write(str(e) + '\n')
-
-    tree2 = open('treerfe.txt', 'w')
-    for e in allMetricsTree2:
-        tree2.write(str(e) + '\n')
-
-    svm2 = open('svmrfe.txt', 'w')
-    for e in allMetricsSVM2:
-        svm2.write(str(e) + '\n')
-    '''
+    
         # rank por random forest
-    rankListImportanceRFC3 = treeListSelect(df)
+    rankListImportanceRFC = treeListSelect(df)
+
     allMetricsRFC3, acc_RFC3 = avaliaModelLista(rankListImportanceRFC, RFC, df)
     allMetricsTree3, acc_Tree3 = avaliaModelLista(rankListImportanceRFC, tree, df)
     allMetricsSVM3, acc_SVM3 = avaliaModelLista(rankListImportanceRFC, SVM, df)
@@ -206,16 +188,3 @@ if __name__=='__main__':
     saveData('rfcES.txt', allMetricsRFC3)
     saveData('treeES.txt',allMetricsTree3)
     saveData('svmEs.txt',allMetricsSVM3)
-    '''
-    rfc3 = open('rfcES.txt', 'w')
-    for e in allMetricsRFC3:
-        rfc3.write(str(e) + '\n')
-
-    tree3 = open('treeES.txt', 'w')
-    for e in allMetricsTree3:
-        tree3.write(str(e) + '\n')
-
-    svm3 = open('svmES.txt', 'w')
-    for e in allMetricsSVM3:
-        svm3.write(str(e) + '\n')
-'''
