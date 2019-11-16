@@ -1,7 +1,7 @@
 from sys import argv, exit
 from utils import carregar_base
 from FCBF_master.src.fcbf import fcbf_wrapper
-from sklearn.feature_selection import VarianceThreshold, chi2
+from sklearn.feature_selection import VarianceThreshold, chi2, SelectKBest, f_regression
 
 def variance_threshold(dados):
 
@@ -26,10 +26,13 @@ def fcbf(caminho):
 
 def cfs(dados):
 	print("Olá.")
-	
+
+def chi_square(dados):
+	X = dados.drop(columns='Result').replace(-1,2)
+	Y = dados[-1:].replace(-1,2)
+	SelectKBest(f_regression, k=20).fit_transform(X.shape, Y.shape)
 
 if __name__=='__main__':
 
 	dados = carregar_base(argv[1])
-	variance_threshold(dados)
-	#fcbf(argv[1])
+	chi_square(dados)
