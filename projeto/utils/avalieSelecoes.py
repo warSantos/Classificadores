@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from sklearn.feature_selection import RFE
 
 NUM_VARIAVEIS = 48
+CLASS_LABEL = 'CLASS_LABEL'
 
 def calculateMetrics(Y, y_pred):
     return (accuracy_score(Y, y_pred), roc_auc_score(Y, y_pred),
@@ -38,33 +39,36 @@ def sfsListSelect(model, df):
     sfs = SFS(model, k_features=n_features, forward=True,
             floating=False, verbose=2, scoring='accuracy', cv=5,
             n_jobs=-1)
-    X = df.drop('CLASS_LABEL',axis=1)
-    Y = df['CLASS_LABEL'].astype('int32')
+    X = df.drop(CLASS_LABEL,axis=1)
+    Y = df[CLASS_LABEL].astype('int32')
     sfs.fit(X, Y)
     return RankList(sfs, df, n_features)
 
 
 def avaliaModelLista(rankList, model, df):
-    X = df.drop('CLASS_LABEL',axis=1)
-    Y = df['CLASS_LABEL'].astype('int32')
-    y_pred = cross_val_predict(model, X, Y, cv=5)
+    varNumber = 0;
+    Y = df[CLASS_LABEL].astype('int32')
+    X = df.drop(CLASS_LABEL,axis=1)
     allMetrics = list()
     acuracy = list()
-    allMetrics.append(calculateMetrics(Y, y_pred))
-    acuracy.append(allMetrics[0][0])
-    varNumber = 0;
-    for feature in rankList:
-        X = X.drop(feature, axis = 1)
-        varNumber += 1
+    while len(rankList) > 0:
+        # Testando o modelo.
         y_pred = cross_val_predict(model, X, Y, cv=5)
+        # Salvando as métricas (roc_curve, acuracy, precision,...).
         allMetrics.append(calculateMetrics(Y, y_pred))
+        # Salvando a acurácia.
         acuracy.append(allMetrics[varNumber][0])
-
+        # Removendo uma variável da base de dados.
+        variavel = rankList.pop()
+        X = X.drop(variavel, axis = 1)
+        print("Treinando com", NUM_VARIAVEIS-varNumber, "variáveis.")                                                                                                           
+        varNumber += 1
     return allMetrics, acuracy
 
+
 def treeListSelect(df):
-    X = df.drop('CLASS_LABEL',axis=1)
-    Y = df['CLASS_LABEL'].astype('int32')
+    X = df.drop(CLASS_LABEL,axis=1)
+    Y = df[CLASS_LABEL].astype('int32')
     rfc = RandomForestClassifier(n_estimators = 100, criterion = 'entropy')
     rfc.fit(X, Y)
     columList = df.columns
@@ -96,8 +100,8 @@ def plotGrafico(acc_RFC, acc_Tree, acc_SVM, path):
 
 
 def seleciona_variaveis_RFE_Metrics(model, dados, num_variaveis):
-    X = dados.drop('CLASS_LABEL',axis=1).astype('int32')
-    Y = dados['CLASS_LABEL'].astype('int32')
+    X = dados.drop(CLASS_LABEL,axis=1).astype('int32')
+    Y = dados[CLASS_LABEL].astype('int32')
     rfe = RFE(model, step=1, n_features_to_select = num_variaveis).fit(X, Y)
 
     # gera lista de variaveis para serem retiradas
