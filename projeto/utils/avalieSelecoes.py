@@ -134,7 +134,7 @@ if __name__=='__main__':
     RFC = RandomForestClassifier(n_estimators = 100, criterion = 'entropy')
     tree = tree.DecisionTreeClassifier()
     SVM = SVC(C=1, gamma='scale', kernel = 'linear')
-    
+        
     rankListRFC = sfsListSelect(RFC, df)
     rankListTree = sfsListSelect(tree, df)
     rankListSVM = sfsListSelect(SVM, df)
@@ -144,11 +144,11 @@ if __name__=='__main__':
 
     print(str(acc_Tree))
 
-    plotGrafico(acc_RFC, acc_Tree, acc_SVM, 'GraficoSVS.png')
+    plotGrafico(acc_RFC, acc_Tree, acc_SVM, 'dados/sfs/GraficoSFS.png')
 
-    saveData('rfcsfs.txt', allMetricsRFC)
-    saveData('treesfs.txt', allMetricsTree)
-    saveData('svmsfs.txt', allMetricsSVM)
+    saveData('dados/sfs/rfcsfs.txt', allMetricsRFC)
+    saveData('dados/sfs/treesfs.txt', allMetricsTree)
+    saveData('dados/sfs/svmsfs.txt', allMetricsSVM)
 
     # rfe
     print('SELECIONANDO RFE 0/3\n')
@@ -175,21 +175,21 @@ if __name__=='__main__':
         allMetricsSVM2.append(k)
         acc_SVM2.append(allMetricsSVM2[i][0])
 
-    plotGrafico(acc_RFC2, acc_Tree2, acc_SVM2, 'GraficoRFE.png')
+    plotGrafico(acc_RFC2, acc_Tree2, acc_SVM2, 'dados/rfe/GraficoRFE.png')
     #salva em arquivos
-    saveData('rfcrfe.txt', allMetricsRFC2)
-    saveData('treerfe.txt', allMetricsTree2)
-    saveData('svmrfe.txt', allMetricsSVM2)
+    saveData('dados/rfe/rfcrfe.txt', allMetricsRFC2)
+    saveData('dados/rfe/treerfe.txt', allMetricsTree2)
+    saveData('dados/rfe/svmrfe.txt', allMetricsSVM2)
     
-        # rank por random forest
+    # rank por random forest
     rankListImportanceRFC = treeListSelect(df)
 
     allMetricsRFC3, acc_RFC3 = avaliaModelLista(rankListImportanceRFC, RFC, df)
     allMetricsTree3, acc_Tree3 = avaliaModelLista(rankListImportanceRFC, tree, df)
     allMetricsSVM3, acc_SVM3 = avaliaModelLista(rankListImportanceRFC, SVM, df)
 
-    plotGrafico(acc_RFC3, acc_Tree3, acc_SVM3, 'GraficoRFCSelect.png')
+    plotGrafico(acc_RFC3, acc_Tree3, acc_SVM3, 'dados/rforest/GraficoRFCSelect.png')
 
-    saveData('rfcES.txt', allMetricsRFC3)
-    saveData('treeES.txt',allMetricsTree3)
-    saveData('svmEs.txt',allMetricsSVM3)
+    saveData('dados/rforest/rfcES.txt', allMetricsRFC3)
+    saveData('dados/rforest/treeES.txt',allMetricsTree3)
+    saveData('dados/rforest/svmEs.txt',allMetricsSVM3)

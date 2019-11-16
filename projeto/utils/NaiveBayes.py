@@ -120,7 +120,7 @@ def validacao_cruzada(arquivo, variaveis_drop=['Prefix_Suffix'], lotes=5):
 	pyplot.xlabel('Taxa de Falsos Positivos')
 	pyplot.ylabel('Taxa de Verdadeiros Positivos')
 	pyplot.legend()
-	pyplot.savefig('roc_auc.png')
+	pyplot.savefig('dados/nbayes/roc_auc.png')
 
 
 def funcao_teste():
