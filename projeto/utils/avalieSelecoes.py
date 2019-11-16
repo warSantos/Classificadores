@@ -8,7 +8,7 @@ from sklearn.metrics import classification_report, roc_auc_score, precision_scor
 import numpy as np
 from mlxtend.feature_selection import SequentialFeatureSelector as SFS
 import matplotlib.pyplot as plt
-from sklearn.feature_selection import RFE
+from sklearn.feature_selection import RFECV
 
 NUM_VARIAVEIS = 48
 CLASS_LABEL = 'CLASS_LABEL'
@@ -46,7 +46,7 @@ def sfsListSelect(model, df):
 
 
 def avaliaModelLista(rankList, model, df):
-    varNumber = 0;
+    varNumber = 0
     Y = df[CLASS_LABEL].astype('int32')
     X = df.drop(CLASS_LABEL,axis=1)
     allMetrics = list()
@@ -102,7 +102,7 @@ def plotGrafico(acc_RFC, acc_Tree, acc_SVM, path):
 def seleciona_variaveis_RFE_Metrics(model, dados, num_variaveis):
     X = dados.drop(CLASS_LABEL,axis=1).astype('int32')
     Y = dados[CLASS_LABEL].astype('int32')
-    rfe = RFE(model, step=1, n_features_to_select = num_variaveis).fit(X, Y)
+    rfe = RFECV(model, step=1, n_features_to_select = num_variaveis, n_jobs=-1).fit(X, Y)
 
     # gera lista de variaveis para serem retiradas
     featuresNames = X.iloc[0].index
@@ -156,7 +156,7 @@ if __name__=='__main__':
     acc_RFC2 = list()
     for i in range(0, NUM_VARIAVEIS):
         k = seleciona_variaveis_RFE_Metrics(RFC, df, NUM_VARIAVEIS-i)
-        allMetricsRFC2.append(k);
+        allMetricsRFC2.append(k)
         acc_RFC2.append(allMetricsRFC2[i][0])
 
     allMetricsTree2 = list()
@@ -164,7 +164,7 @@ if __name__=='__main__':
     print('1/3\n')
     for i in range(0, NUM_VARIAVEIS):
         k = seleciona_variaveis_RFE_Metrics(tree, df, NUM_VARIAVEIS-i)
-        allMetricsTree2.append(k);
+        allMetricsTree2.append(k)
         acc_Tree2.append(allMetricsTree2[i][0])
 
     allMetricsSVM2 = list()
@@ -172,7 +172,7 @@ if __name__=='__main__':
     print('2/3\n')
     for i in range(0, NUM_VARIAVEIS):
         k = seleciona_variaveis_RFE_Metrics(SVM, df, NUM_VARIAVEIS-i)
-        allMetricsSVM2.append(k);
+        allMetricsSVM2.append(k)
         acc_SVM2.append(allMetricsSVM2[i][0])
 
     plotGrafico(acc_RFC2, acc_Tree2, acc_SVM2, 'GraficoRFE.png')
