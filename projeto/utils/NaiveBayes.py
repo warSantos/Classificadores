@@ -5,7 +5,11 @@ from sklearn.metrics import roc_auc_score, roc_curve
 from matplotlib import pyplot
 
 # Constroi tabela de probailidades para predição
-def treino(dados):
+def treino(dados, variaveis_drop):
+
+	# Remoção de variáveis da base de dados.
+	for variavel in variaveis_drop:
+		dados = dados.drop(columns=variavel)
 
 	# Obtendo a quantidade de páginas de phishing e legítmas normalizado.
 	prob_classes = dados['Result'].value_counts(normalize=True)
@@ -37,10 +41,10 @@ def predicao(prob_classes, phishing, legitimo, alvo):
 			p_prob *= phishing[variavel][alvo[variavel]]
 			# Multiplicando pela probabilidade da variável em relação a classe legitimo.
 			l_prob *= legitimo[variavel][alvo[variavel]]
-		except Exception as err:
-			#print(str(err), variavel)
+		except KeyError as err:
+			print(str(err), variavel)
+			#print(legitimo[variavel])
 			excecoes += 1
-			#pass
 	# Multiplicando pela probabilidade a priori das classes.
 	p_prob *= prob_classes[1]
 	l_prob *= prob_classes[-1]
@@ -56,7 +60,7 @@ def predicao(prob_classes, phishing, legitimo, alvo):
 	#print("Probabilidade de ser phishing: ", p_prob/(p_prob + l_prob))
 	#print("Probabilidade de ser legítima: ", l_prob/(p_prob + l_prob))
 
-def validacao_cruzada(arquivo, lotes=4):
+def validacao_cruzada(arquivo, variaveis_drop=['Prefix_Suffix'], lotes=4):
 	
 	base = carregar_base(argv[1])
 	positivos = 0
@@ -78,7 +82,7 @@ def validacao_cruzada(arquivo, lotes=4):
 		# Selecionando espaço de teste.
 		dt_teste = dados.tail(total - ntreino)
 		# Treinando o algoritmo.
-		prob_classes, phishing, legitimo = treino(dt_treino)
+		prob_classes, phishing, legitimo = treino(dt_treino, variaveis_drop)
 		# Testando o algoritmo.
 		for index, row in dt_teste.iterrows():
 			pf, pl, classe, excecoes = predicao(prob_classes, phishing, legitimo, row)
@@ -122,12 +126,14 @@ def validacao_cruzada(arquivo, lotes=4):
 def funcao_teste():
 	dados = carregar_base(argv[1])
 	# Treinando o algoritmo.
-	prob_classes, phishing, legitimo = treino(dados)
+	prob_classes, phishing, legitimo = treino(dados, ['Prefix_Suffix'])
 	# Pegando uma amostra para teste.
 	indice = randint(0, len(dados.index))
 	alvo = dados.iloc[indice]
 	# Pegando a classe da amostra.
-	predicao(prob_classes, phishing, legitimo, alvo)
+	pf, pl, classe, excecoes = predicao(prob_classes, phishing, legitimo, alvo)
+	print("Exceções: ", excecoes)
+	print("Classe predita: ", classe)
 	print("Classe real: ", alvo['Result'])
 
 if __name__=='__main__':

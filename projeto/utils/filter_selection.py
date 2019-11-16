@@ -25,11 +25,11 @@ def fcbf(caminho):
 	print(fcbf_wrapper(caminho, 0.01, delim=',', header=False))
 
 def cfs(dados):
-
+	print("Olá.")
 	
 
 if __name__=='__main__':
 
 	dados = carregar_base(argv[1])
-	#variance_threshold(dados)
+	variance_threshold(dados)
 	#fcbf(argv[1])
