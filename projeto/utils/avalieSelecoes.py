@@ -10,6 +10,7 @@ from mlxtend.feature_selection import SequentialFeatureSelector as SFS
 import matplotlib.pyplot as plt
 from sklearn.feature_selection import RFE
 
+NUM_VARIAVEIS = 48
 
 def calculateMetrics(y_pred, Y):
     return (accuracy_score(y_pred, Y), roc_auc_score(y_pred, Y),
@@ -33,7 +34,7 @@ def RankList(dic_sfs, df, n):
 
 
 def sfsListSelect(model, df):
-    n_features = len(df.columns)-48
+    n_features = len(df.columns)-NUM_VARIAVEIS
     sfs = SFS(model, k_features=n_features, forward=True,
             floating=False, verbose=2, scoring='accuracy', cv=5,
             n_jobs=-1)
@@ -149,24 +150,24 @@ if __name__=='__main__':
     print('SELECIONANDO RFE 0/3\n')
     allMetricsRFC2 = list()
     acc_RFC2 = list()
-    for i in range(0, 48):
-        k = seleciona_variaveis_RFE_Metrics(RFC, df, 48-i)
+    for i in range(0, NUM_VARIAVEIS):
+        k = seleciona_variaveis_RFE_Metrics(RFC, df, NUM_VARIAVEIS-i)
         allMetricsRFC2.append(k);
         acc_RFC2.append(allMetricsRFC2[i][0])
 
     allMetricsTree2 = list()
     acc_Tree2 = list()
     print('1/3\n')
-    for i in range(0, 48):
-        k = seleciona_variaveis_RFE_Metrics(tree, df, 48-i)
+    for i in range(0, NUM_VARIAVEIS):
+        k = seleciona_variaveis_RFE_Metrics(tree, df, NUM_VARIAVEIS-i)
         allMetricsTree2.append(k);
         acc_Tree2.append(allMetricsTree2[i][0])
 
     allMetricsSVM2 = list()
     acc_SVM2 = list()
     print('2/3\n')
-    for i in range(0, 48):
-        k = seleciona_variaveis_RFE_Metrics(SVM, df, 48-i)
+    for i in range(0, NUM_VARIAVEIS):
+        k = seleciona_variaveis_RFE_Metrics(SVM, df, NUM_VARIAVEIS-i)
         allMetricsSVM2.append(k);
         acc_SVM2.append(allMetricsSVM2[i][0])
 

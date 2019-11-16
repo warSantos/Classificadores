@@ -60,7 +60,7 @@ def predicao(prob_classes, phishing, legitimo, alvo):
 	#print("Probabilidade de ser phishing: ", p_prob/(p_prob + l_prob))
 	#print("Probabilidade de ser legítima: ", l_prob/(p_prob + l_prob))
 
-def validacao_cruzada(arquivo, variaveis_drop=['Prefix_Suffix'], lotes=4):
+def validacao_cruzada(arquivo, variaveis_drop=['Prefix_Suffix'], lotes=5):
 	
 	base = carregar_base(argv[1])
 	positivos = 0
@@ -72,7 +72,7 @@ def validacao_cruzada(arquivo, variaveis_drop=['Prefix_Suffix'], lotes=4):
 	total_excecoes = 0
 	# Calculando quantas instâncias seram utilizadas para treino e teste.
 	total = len(base.index)
-	ntreino = total - int(total/lotes)
+	ntreino = total - int(total/lotes)#*(lotes-1)
 	predicoes = list()
 	eixo_y = list()
 	while iteracoes < lotes:
@@ -120,7 +120,7 @@ def validacao_cruzada(arquivo, variaveis_drop=['Prefix_Suffix'], lotes=4):
 	pyplot.xlabel('Taxa de Falsos Positivos')
 	pyplot.ylabel('Taxa de Verdadeiros Positivos')
 	pyplot.legend()
-	pyplot.show()
+	pyplot.savefig('roc_auc.png')
 
 
 def funcao_teste():
@@ -138,4 +138,10 @@ def funcao_teste():
 
 if __name__=='__main__':
 	#funcao_teste()
+	variaves = ['double_slash_redirecting', \
+				'port', \
+				'on_mouseover', \
+				'RightClick', \
+				'Iframe', \
+				'Prefix_Suffix']
 	validacao_cruzada(argv[1])
