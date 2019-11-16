@@ -102,7 +102,7 @@ def plotGrafico(acc_RFC, acc_Tree, acc_SVM, path):
 def seleciona_variaveis_RFE_Metrics(model, dados, num_variaveis):
     X = dados.drop(CLASS_LABEL,axis=1).astype('int32')
     Y = dados[CLASS_LABEL].astype('int32')
-    rfe = RFECV(model, step=1, n_features_to_select = num_variaveis, n_jobs=-1).fit(X, Y)
+    rfe = RFECV(model, step=1, min_features_to_select = num_variaveis, n_jobs=-1).fit(X, Y)
 
     # gera lista de variaveis para serem retiradas
     featuresNames = X.iloc[0].index
