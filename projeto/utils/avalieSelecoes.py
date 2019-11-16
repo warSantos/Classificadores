@@ -12,9 +12,9 @@ from sklearn.feature_selection import RFE
 
 NUM_VARIAVEIS = 48
 
-def calculateMetrics(y_pred, Y):
-    return (accuracy_score(y_pred, Y), roc_auc_score(y_pred, Y),
-            f1_score(y_pred, Y), recall_score(y_pred, Y),precision_score(y_pred, Y),
+def calculateMetrics(Y, y_pred):
+    return (accuracy_score(Y, y_pred), roc_auc_score(Y, y_pred),
+            f1_score(Y, y_pred), recall_score(Y, y_pred),precision_score(Y, y_pred),
            confusion_matrix(Y, y_pred).ravel())
 
 
@@ -50,14 +50,14 @@ def avaliaModelLista(rankList, model, df):
     y_pred = cross_val_predict(model, X, Y, cv=5)
     allMetrics = list()
     acuracy = list()
-    allMetrics.append(calculateMetrics(y_pred, Y))
+    allMetrics.append(calculateMetrics(Y, y_pred))
     acuracy.append(allMetrics[0][0])
     varNumber = 0;
     for feature in rankList:
         X = X.drop(feature, axis = 1)
         varNumber += 1
         y_pred = cross_val_predict(model, X, Y, cv=5)
-        allMetrics.append(calculateMetrics(y_pred, Y))
+        allMetrics.append(calculateMetrics(Y, y_pred))
         acuracy.append(allMetrics[varNumber][0])
 
     return allMetrics, acuracy
@@ -113,7 +113,7 @@ def seleciona_variaveis_RFE_Metrics(model, dados, num_variaveis):
     for i in range(0, len(featuresDrops)):
         X_new = X_new.drop(featuresNames[i], axis = 1)
     y_pred = cross_val_predict(model, X_new, Y, cv=5)
-    return calculateMetrics(y_pred, Y)
+    return calculateMetrics(Y, y_pred)
 
 def saveData(path, data):
     arq = open(path, 'w')
