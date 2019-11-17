@@ -37,10 +37,16 @@ def predicao(prob_classes, phishing, legitimo, alvo):
 	# Para cada variável do alvo.
 	for variavel in phishing.keys():
 		try:
-			# Multiplicando pela probabilidade da variável em relação a classe phishing.
-			p_prob *= phishing[variavel][alvo[variavel]]
-			# Multiplicando pela probabilidade da variável em relação a classe legitimo.
-			l_prob *= legitimo[variavel][alvo[variavel]]
+			if alvo[variavel] in phishing[variavel]:
+				# Multiplicando pela probabilidade da variável em relação a classe phishing.
+				p_prob *= phishing[variavel][alvo[variavel]]
+			else:
+				p_prob *= 0
+			if alvo[variavel] in legitimo[variavel]:
+				# Multiplicando pela probabilidade da variável em relação a classe legitimo.
+				l_prob *= legitimo[variavel][alvo[variavel]]
+			else:
+				p_prob *= 0
 		except KeyError as err:
 			print(str(err), variavel)
 			#print(legitimo[variavel])
