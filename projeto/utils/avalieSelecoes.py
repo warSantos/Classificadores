@@ -96,6 +96,7 @@ def plotGrafico(acc_RFC, acc_Tree, acc_SVM, path):
     plt.ylabel('Acurácia')
     plt.legend()
     plt.savefig(path)
+    plt.close()
 
 
 def seleciona_variaveis_RFE_Metrics(model, dados, num_variaveis):
