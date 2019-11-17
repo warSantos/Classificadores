@@ -1,3 +1,4 @@
+from scipy.io import arff
 import pandas as pd
 from sys import argv, exit
 from sklearn.model_selection import train_test_split
@@ -6,8 +7,10 @@ from sklearn.model_selection import cross_val_score
 
 
 def carregar_base(caminho):
-	base_dados = pd.read_csv(caminho)
-	return base_dados
+	#base_dados = pd.read_csv(caminho)
+	data = arff.loadarff(caminho)
+	df = pd.DataFrame(data[0])
+	return df
 
 
 def validacao_cruzada(X, Y, model):

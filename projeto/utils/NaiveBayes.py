@@ -4,6 +4,8 @@ from random import randint
 from sklearn.metrics import roc_auc_score, roc_curve
 from matplotlib import pyplot
 
+CLASS_LABEL = 'CLASS_LABEL'
+
 # Constroi tabela de probailidades para predição
 def treino(dados, variaveis_drop):
 
@@ -12,17 +14,17 @@ def treino(dados, variaveis_drop):
 		dados = dados.drop(columns=variavel)
 
 	# Obtendo a quantidade de páginas de phishing e legítmas normalizado.
-	prob_classes = dados['Result'].value_counts(normalize=True)
+	prob_classes = dados[CLASS_LABEL].value_counts(normalize=True)
 
 	# Separando as páginas de phishing de legitmas e removendo a classe.
-	dt_phishing = dados[dados['Result'] == 1]
-	dt_legitimo = dados[dados['Result'] == -1]
+	dt_phishing = dados[dados[CLASS_LABEL] == 1]
+	dt_legitimo = dados[dados[CLASS_LABEL] == -1]
 	
 	# Construindo a tabela de probabilidade para cada variável.
 	phishing = {}
 	legitimo = {}
 	variaveis = list(dt_phishing.keys())
-	variaveis.remove('Result')
+	variaveis.remove(CLASS_LABEL)
 	for variavel in variaveis:
 		phishing[variavel] = dt_phishing[variavel].value_counts(normalize=True)
 		legitimo[variavel] = dt_legitimo[variavel].value_counts(normalize=True)
@@ -68,7 +70,7 @@ def predicao(prob_classes, phishing, legitimo, alvo):
 
 def validacao_cruzada(arquivo, variaveis_drop=['Prefix_Suffix'], lotes=5):
 	
-	base = carregar_base(argv[1])
+	base = carregar_base(arquivo)
 	positivos = 0
 	negativos = 0
 	f_positivos = 0
@@ -93,20 +95,20 @@ def validacao_cruzada(arquivo, variaveis_drop=['Prefix_Suffix'], lotes=5):
 		for index, row in dt_teste.iterrows():
 			pf, pl, classe, excecoes = predicao(prob_classes, phishing, legitimo, row)
 			# Contabilizando negativos.
-			if classe == -1 and row['Result'] == -1:
+			if classe == -1 and row[CLASS_LABEL] == -1:
 				negativos += 1
 			# Contabilizando falsos negativos.
-			elif classe == -1 and row['Result'] == 1:
+			elif classe == -1 and row[CLASS_LABEL] == 1:
 				f_negativos += 1
 			# Contabilizando positivos.
-			elif classe == 1 and row['Result'] == 1:
+			elif classe == 1 and row[CLASS_LABEL] == 1:
 				positivos += 1
 			# Contabilizando falso positivos.
 			else:
 				f_positivos += 1
 			total_testes += 1
 			predicoes.append(classe)
-			eixo_y.append(row['Result'])
+			eixo_y.append(row[CLASS_LABEL])
 			total_excecoes += excecoes
 		iteracoes += 1
 	print("Total Exceções: ", total_excecoes)
@@ -140,11 +142,11 @@ def funcao_teste():
 	pf, pl, classe, excecoes = predicao(prob_classes, phishing, legitimo, alvo)
 	print("Exceções: ", excecoes)
 	print("Classe predita: ", classe)
-	print("Classe real: ", alvo['Result'])
+	print("Classe real: ", alvo[CLASS_LABEL])
 
 if __name__=='__main__':
 	#funcao_teste()
-	variaves = ['double_slash_redirecting', \
+	variaveis = ['double_slash_redirecting', \
 				'port', \
 				'on_mouseover', \
 				'RightClick', \

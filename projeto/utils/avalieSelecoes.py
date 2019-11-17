@@ -1,5 +1,4 @@
-from scipy.io import arff
-import pandas as pd
+from utils import carregar_base
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
@@ -10,7 +9,7 @@ from mlxtend.feature_selection import SequentialFeatureSelector as SFS
 import matplotlib.pyplot as plt
 from sklearn.feature_selection import RFECV
 
-NUM_VARIAVEIS = 48
+NUM_VARIAVEIS = 30
 CLASS_LABEL = 'CLASS_LABEL'
 
 def calculateMetrics(Y, y_pred):
@@ -128,8 +127,7 @@ def saveData(path, data):
 if __name__=='__main__':
 
     path = '../../dados/Phishing_Legitimate_full.arff'
-    data = arff.loadarff(path)
-    df = pd.DataFrame(data[0])
+    df = carregar_base(path)
 
     RFC = RandomForestClassifier(n_estimators = 100, criterion = 'entropy')
     tree = tree.DecisionTreeClassifier()
