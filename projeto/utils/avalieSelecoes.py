@@ -126,7 +126,7 @@ def saveData(path, data):
 
 if __name__=='__main__':
 
-    path = '../../dados/Phishing_Legitimate_full.arff'
+    path = '../../dados/Training Dataset.arff'
     df = carregar_base(path)
 
     RFC = RandomForestClassifier(n_estimators = 100, criterion = 'entropy')
