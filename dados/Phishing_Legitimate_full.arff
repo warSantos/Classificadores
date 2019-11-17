@@ -1,3 +1,56 @@
+@relation 'feature_compiled_all-weka.filters.unsupervised.attribute.Remove-R46-50,53,56-60'
+
+@attribute NumDots numeric
+@attribute SubdomainLevel numeric
+@attribute PathLevel numeric
+@attribute UrlLength numeric
+@attribute NumDash numeric
+@attribute NumDashInHostname numeric
+@attribute AtSymbol numeric
+@attribute TildeSymbol numeric
+@attribute NumUnderscore numeric
+@attribute NumPercent numeric
+@attribute NumQueryComponents numeric
+@attribute NumAmpersand numeric
+@attribute NumHash numeric
+@attribute NumNumericChars numeric
+@attribute NoHttps numeric
+@attribute RandomString numeric
+@attribute IpAddress numeric
+@attribute DomainInSubdomains numeric
+@attribute DomainInPaths numeric
+@attribute HttpsInHostname numeric
+@attribute HostnameLength numeric
+@attribute PathLength numeric
+@attribute QueryLength numeric
+@attribute DoubleSlashInPath numeric
+@attribute NumSensitiveWords numeric
+@attribute EmbeddedBrandName numeric
+@attribute PctExtHyperlinks numeric
+@attribute PctExtResourceUrls numeric
+@attribute ExtFavicon numeric
+@attribute InsecureForms numeric
+@attribute RelativeFormAction numeric
+@attribute ExtFormAction numeric
+@attribute AbnormalFormAction numeric
+@attribute PctNullSelfRedirectHyperlinks numeric
+@attribute FrequentDomainNameMismatch numeric
+@attribute FakeLinkInStatusBar numeric
+@attribute RightClickDisabled numeric
+@attribute PopUpWindow numeric
+@attribute SubmitInfoToEmail numeric
+@attribute IframeOrFrame numeric
+@attribute MissingTitle numeric
+@attribute ImagesOnlyInForm numeric
+@attribute SubdomainLevelRT numeric
+@attribute UrlLengthRT numeric
+@attribute PctExtResourceUrlsRT numeric
+@attribute AbnormalExtFormActionR numeric
+@attribute ExtMetaScriptLinkRT numeric
+@attribute PctExtNullSelfRedirectHyperlinksRT numeric
+@attribute CLASS_LABEL {0,1}
+
+@data
 3,1,5,72,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,21,44,0,0,0,0,0.0000000000,0.2500000000,1,1,0,0,0,0.0000000000,0,0,0,0,0,0,0,1,1,0,1,1,-1,1,1
 3,1,3,144,0,0,0,0,2,0,2,1,0,41,1,0,0,0,0,0,17,16,103,0,1,0,0.0000000000,0.0000000000,0,1,0,0,0,0.0000000000,0,0,0,0,0,0,0,0,1,-1,1,1,1,1,1
 3,1,2,58,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,27,24,0,0,0,0,0.3750000000,1.0000000000,1,1,0,0,0,0.0000000000,0,0,0,0,0,0,0,0,1,0,-1,1,-1,0,1
