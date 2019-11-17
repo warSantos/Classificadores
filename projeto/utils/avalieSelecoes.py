@@ -24,7 +24,7 @@ def RankList(dic_sfs, df, n):
     name = df.columns
     x = dic_sfs.subsets_
     print(x)
-    for i in range(1, n):
+    for i in range(1, n+1):
         candidates = x[i]['feature_idx']
         for j in range(0, i):
             if(candidates[j] not in rankList):
@@ -59,8 +59,9 @@ def avaliaModelLista(rankList, model, df):
         acuracy.append(allMetrics[varNumber][0])
         # Removendo uma variável da base de dados.
         variavel = rankList.pop()
+        print(variavel);
         X = X.drop(variavel, axis = 1)
-        print("Treinando com", NUM_VARIAVEIS-varNumber, "variáveis.")                                                                                                           
+        print("Treinando com", len(X.columns), "variáveis.")
         varNumber += 1
     return allMetrics, acuracy
 
@@ -83,14 +84,14 @@ def treeListSelect(df):
 def plotGrafico(acc_RFC, acc_Tree, acc_SVM, path):
     x = range(1, len(acc_Tree)+1)
     print('len x', len(x),' -- ' , len(acc_Tree))
-    plt.plot(x, acc_Tree, 'o', color = 'blue' )
-    plt.plot(x, acc_Tree, label = 'Decision-Tree', color = 'blue')
+    plt.plot(x, reverse(acc_Tree), 'o', color = 'blue' )
+    plt.plot(x, reverse(acc_Tree), label = 'Decision-Tree', color = 'blue')
 
-    plt.plot(x, acc_RFC, 'o', color = 'red')
-    plt.plot(x, acc_RFC, label = 'RFC', color = 'red')
+    plt.plot(x, reverse(acc_RFC), 'o', color = 'red')
+    plt.plot(x, reverse(acc_RFC), label = 'RFC', color = 'red')
 
-    plt.plot(x, acc_SVM, 'o', color = 'green')
-    plt.plot(x, acc_SVM, label = 'SVM',color = 'green')
+    plt.plot(x, reverse(acc_SVM), 'o', color = 'green')
+    plt.plot(x, reverse(acc_SVM), label = 'SVM',color = 'green')
 
     plt.xlabel('Número de variáveis')
     plt.ylabel('Acurácia')
@@ -133,15 +134,13 @@ if __name__=='__main__':
     RFC = RandomForestClassifier(n_estimators = 100, criterion = 'entropy')
     tree = tree.DecisionTreeClassifier()
     SVM = SVC(C=1, gamma='scale', kernel = 'linear')
-        
-    rankListRFC = sfsListSelect(RFC, df)
+
     rankListTree = sfsListSelect(tree, df)
+    rankListRFC = sfsListSelect(RFC, df)
     rankListSVM = sfsListSelect(SVM, df)
     allMetricsRFC, acc_RFC = avaliaModelLista(rankListRFC, RFC, df)
     allMetricsTree, acc_Tree = avaliaModelLista(rankListTree, tree, df)
     allMetricsSVM, acc_SVM = avaliaModelLista(rankListSVM, SVM, df)
-
-    print(str(acc_Tree))
 
     plotGrafico(acc_RFC, acc_Tree, acc_SVM, 'dados/sfs/GraficoSFS.png')
 
@@ -179,8 +178,8 @@ if __name__=='__main__':
     saveData('dados/rfe/rfcrfe.txt', allMetricsRFC2)
     saveData('dados/rfe/treerfe.txt', allMetricsTree2)
     saveData('dados/rfe/svmrfe.txt', allMetricsSVM2)
-    
     # rank por random forest
+
     rankListImportanceRFC = treeListSelect(df)
 
     allMetricsRFC3, acc_RFC3 = avaliaModelLista(rankListImportanceRFC, RFC, df)
