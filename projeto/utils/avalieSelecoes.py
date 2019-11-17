@@ -9,7 +9,7 @@ from mlxtend.feature_selection import SequentialFeatureSelector as SFS
 import matplotlib.pyplot as plt
 from sklearn.feature_selection import RFECV
 
-NUM_VARIAVEIS = 30
+NUM_VARIAVEIS = 31
 CLASS_LABEL = 'CLASS_LABEL'
 
 def calculateMetrics(Y, y_pred):
@@ -34,7 +34,7 @@ def RankList(dic_sfs, df, n):
 
 
 def sfsListSelect(model, df):
-    n_features = len(df.columns)-NUM_VARIAVEIS
+    n_features = len(df.columns)-1
     sfs = SFS(model, k_features=n_features, forward=True,
             floating=False, verbose=2, scoring='accuracy', cv=5,
             n_jobs=-1)
