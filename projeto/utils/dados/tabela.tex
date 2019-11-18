@@ -1,0 +1,23 @@
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[]
+\begin{tabular}{|c|c|l|l|l|l|l|c|}
+\hline
+\rowcolor[HTML]{9B9B9B} 
+{\color[HTML]{000000} \textbf{}} & {\color[HTML]{000000} \textbf{\begin{tabular}[c]{@{}c@{}}Quantidade\\ de \\ Variáveis\end{tabular}}} & \multicolumn{1}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} \textbf{Feature Selector}}} & \multicolumn{1}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} \textbf{\begin{tabular}[c]{@{}c@{}}Acurácia\\ \%\end{tabular}}}} & \multicolumn{1}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} \textbf{\begin{tabular}[c]{@{}c@{}}ROC AUC\\ \%\end{tabular}}}} & \multicolumn{1}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} \textbf{\begin{tabular}[c]{@{}c@{}}F1-Score\\ \%\end{tabular}}}} & \multicolumn{1}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} \textbf{\begin{tabular}[c]{@{}c@{}}Recall\\ \%\end{tabular}}}} & {\color[HTML]{000000} \textbf{\begin{tabular}[c]{@{}c@{}}Precisão\\ \%\end{tabular}}} \\ \hline
+{\color[HTML]{000000} } & {\color[HTML]{000000} 25} & \cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} SFS} & {\color[HTML]{000000} 96.19} & {\color[HTML]{000000} 96.05} & {\color[HTML]{000000} 96.61} & {\color[HTML]{000000} 97.32} & {\color[HTML]{000000} 95.90} \\ \cline{2-8} 
+{\color[HTML]{000000} } & {\color[HTML]{000000} 29} & \cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} REF} & {\color[HTML]{000000} 95.40} & {\color[HTML]{000000} 95.33} & {\color[HTML]{000000} 95.88} & {\color[HTML]{000000} 96.00} & {\color[HTML]{000000} 95.8} \\ \cline{2-8} 
+\multirow{-3}{*}{{\color[HTML]{000000} \textbf{Arvore de Decisão}}} & {\color[HTML]{000000} 16} & \cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} Information Gain} & {\color[HTML]{000000} 95.61} & {\color[HTML]{000000} 95.53} & {\color[HTML]{000000} 96.07} & {\color[HTML]{000000} 96.23} & {\color[HTML]{000000} 95.90} \\ \hline
+\rowcolor[HTML]{C0C0C0} 
+\cellcolor[HTML]{C0C0C0}{\color[HTML]{000000} } & {\color[HTML]{000000} 29} & {\color[HTML]{000000} SFS} & {\color[HTML]{000000} 96.93} & {\color[HTML]{000000} 96.8} & {\color[HTML]{000000} 97.27} & {\color[HTML]{000000} 97.95} & {\color[HTML]{000000} 96.59} \\ \cline{2-8} 
+\rowcolor[HTML]{C0C0C0} 
+\cellcolor[HTML]{C0C0C0}{\color[HTML]{000000} } & {\color[HTML]{000000} 29} & {\color[HTML]{000000} REF} & {\color[HTML]{000000} 96.93} & {\color[HTML]{000000} 96.81} & {\color[HTML]{000000} 97.27} & {\color[HTML]{000000} 97.92} & 96.62 \\ \cline{2-8} 
+\rowcolor[HTML]{C0C0C0} 
+\multirow{-3}{*}{\cellcolor[HTML]{C0C0C0}{\color[HTML]{000000} \textbf{Random Forest}}} & {\color[HTML]{000000} 30} & {\color[HTML]{000000} Information Gain} & {\color[HTML]{000000} 96.94,} & {\color[HTML]{000000} 96.82} & {\color[HTML]{000000} 97.27} & {\color[HTML]{000000} 97.92} & 96.63 \\ \hline
+{\color[HTML]{000000} } & {\color[HTML]{000000} 27} & \cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} SFS} & 92.75 & 92.47 & 93.57 & 94.85 & {\color[HTML]{000000} 92.33} \\ \cline{2-8} 
+{\color[HTML]{000000} } & {\color[HTML]{000000} 30} & \cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} REF} & 92.63 & 92.36 & 93.47 & 94.69 & 92.28 \\ \cline{2-8} 
+\multirow{-3}{*}{{\color[HTML]{000000} \textbf{SVM}}} & {\color[HTML]{000000} 29} & \cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} Information Gain} & 92.64 & 92.37 & 93.48 & 94.74 & 92.25 \\ \hline
+\end{tabular}
+\end{table}
